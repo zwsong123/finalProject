@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Part 1: supervised model testing
+'''A simple pyspark script to count the number of rows in a parquet-backed dataframe
 Usage:
-    $ spark-submit supervised_test.py hdfs:/path/to/load/model.parquet hdfs:/path/to/file
+    $ spark-submit count.py hdfs:/path/to/file.parquet
 '''
 
 
@@ -12,82 +12,36 @@ import sys
 # And pyspark.sql to get the spark session
 from pyspark.sql import SparkSession
 
-# TODO: you may need to add imports here
-from pyspark.ml import PipelineModel
-from pyspark.mllib.evaluation import MulticlassMetrics
-from pyspark.ml.feature import SQLTransformer
-from pyspark import SparkContext
-from pyspark import SparkConf 
 
-
-def main(spark, model_file, data_file):
-    '''Main routine for supervised evaluation
+def main(spark, filename):
+    '''Main routine for the row counter
     Parameters
     ----------
     spark : SparkSession object
-    model_file : string, path to store the serialized model file
-    data_file : string, path to the parquet file to load
+    filename : string, path to the parquet file to load
     '''
 
-    ###
-    # TODO: YOUR CODE GOES HERE
-    
-    df = spark.read.parquet(data_file)
-    
-    model = PipelineModel.load(model_file)
-    predicts = model.transform(df)
-    
-    
-    sc = SparkContext.getOrCreate()
-    
-    predictionAndLabels = predicts.rdd.map(lambda x: (x.prediction, x.label))
-    #predictionAndLabels=df.rdd.map(lambda lp: (float(model.predict(lp.features)), lp.label))
-    
-    # Instantiate metrics object
-    metrics = MulticlassMetrics(predictionAndLabels)
+    # Load the dataframe
+    df = spark.read.parquet(filename)
 
-    # Overall statistics
-    precision = metrics.precision()
-    recall = metrics.recall()
-    f1Score = metrics.fMeasure()
-    print("Summary Stats")
-    print("Precision = %s" % precision)
-    print("Recall = %s" % recall)
-    print("F1 Score = %s" % f1Score)
+    # Give the dataframe a temporary view so we can run SQL queries
+    df.createOrReplaceTempView('my_table')
 
-    # Statistics by class
-    labels = predicts.rdd.map(lambda x: x.label).distinct().collect()
-    for label in sorted(labels):
-        print("Class %s precision = %s" % (label, metrics.precision(label)))
-        print("Class %s recall = %s" % (label, metrics.recall(label)))
-        print("Class %s F1 Measure = %s" % (label, metrics.fMeasure(label, beta=1.0)))
+    # Construct a query
+    query = spark.sql('SELECT * FROM my_table')
 
-    # Weighted stats
-    print("Weighted recall = %s" % metrics.weightedRecall)
-    print("Weighted precision = %s" % metrics.weightedPrecision)
-    print("Weighted F(1) Score = %s" % metrics.weightedFMeasure())
-
-    
-    
-    
-    ###
-
-    pass
-
-
+    # Print the results to the console
+    query.show(50)
 
 
 # Only enter this block if we're in main
 if __name__ == "__main__":
 
     # Create the spark session object
-    spark = SparkSession.builder.appName('supervised_test').getOrCreate()
-
-    # And the location to store the trained model
-    model_file = sys.argv[1]
+    spark = SparkSession.builder.appName('part1').getOrCreate()
 
     # Get the filename from the command line
-    data_file = sys.argv[2]
+    filename = sys.argv[1]
 
     # Call our main routine
-    main(spark, model_file, data_file)
+    main(spark, filename)
