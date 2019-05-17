@@ -10,10 +10,16 @@ Usage:
 import sys
 
 # And pyspark.sql to get the spark session
+import sys
 from pyspark.sql import SparkSession
+from pyspark import SparkContext
+from pyspark.ml.recommendation import ALS, ALSModel
+from pyspark.mllib.evaluation import RankingMetrics
+import pyspark.sql.functions as f
+sc = SparkContext()
 
 
-def main(spark, filename):
+def main(spark, modelname, filename):
     '''Main routine for the row counter
     Parameters
     ----------
@@ -21,8 +27,8 @@ def main(spark, filename):
     filename : string, path to the parquet file to load
     '''
 
-    # Load the dataframe
-    df = spark.read.parquet(filename)
+    model = ALSModel.load(modelname)
+    df = spark.read.parquet(filename).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
 
     # Give the dataframe a temporary view so we can run SQL queries
     df.createOrReplaceTempView('my_table')
