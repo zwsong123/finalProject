@@ -10,7 +10,6 @@ Usage:
 import sys
 
 # And pyspark.sql to get the spark session
-import sys
 from pyspark.sql import SparkSession
 from pyspark import SparkContext
 from pyspark.ml.recommendation import ALS, ALSModel
