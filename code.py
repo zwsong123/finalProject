@@ -31,7 +31,7 @@ def main(spark, model_file, test_file):
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
     df.createOrReplaceTempView('my_table')
     
-    count = df.sql('SELECT track_index, sum(count) as count* FROM my_table GROUPBY track_index ORDERBY count*')
+    count = spark.sql('SELECT track_index, sum(count) as count* FROM my_table GROUPBY track_index ORDERBY count*')
     count.show(50)
 
 
