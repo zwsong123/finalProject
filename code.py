@@ -57,7 +57,7 @@ def main(spark, model_file, test_file):
     for row in pred.rdd.collect():
         list1.extend(row.recommendations.track_index)
         
-    print (list1[])
+    print (list1)
     
     
     #overr = label.map(lambda x: x[0]-x[1])
