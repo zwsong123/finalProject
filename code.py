@@ -35,12 +35,13 @@ def main(spark, model_file, test_file):
     #label.show(50)
     
     pred = model.recommendForAllUsers(20)
-    pred = pred.select(['user_index', 'recommendations.track_index']).rdd
+    pred = pred.select(['user_index', 'recommendations.track_index'])
     
-    label = pred.join(label).map(lambda x: (x[1]))
+    #pred_label = pred.join(label).map(lambda x: (x[1]))
     
     list1 = []
-    list1 = label.map(lambda x: x[0] += list1)
+    for row in pred:
+        list1 = list1 + row[1]
     
     
     #overr = label.map(lambda x: x[0]-x[1])
