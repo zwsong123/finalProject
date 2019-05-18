@@ -31,28 +31,20 @@ def main(spark, model_file, test_file):
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
                      .orderBy(['user_index', 'count'], ascending = False)
     
-    
 
     df.createOrReplaceTempView('my_table')
     
-    #listened = spark.sql('SELECT track_index, SUM(count) as total FROM my_table GROUP BY track_index ORDER BY total DESC')
-    #listened.show(50)
+    listened = spark.sql('SELECT user_index, track_id FROM my_table GROUP BY user_index')
+    listened.show(50)
     
-    listened = spark.sql('SELECT * FROM my_table')
-    listened.show(100)
-    
-    
-
 
     # Recommend top 100 tracks to each users
-    pred = model.recommendForAllUsers(100)
+    pred = model.recommendForAllUsers(10)
     
-    #pred = pred.select(['user_index', 'recommendations.track_index']).rdd
-    #pred_label = pred.map(lambda x: (x[1]))
+    pred = pred.select(['user_index', 'recommendations.track_index']).rdd
+    #label = listened.map(lambda x: (x[1]))
     
-    pred.createOrReplaceTempView('the_table')
-    reco = spark.sql('SELECT * FROM the_table WHERE user_index =  211510.0')
-    reco.show()
+
     
     
    
