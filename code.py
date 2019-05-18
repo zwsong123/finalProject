@@ -33,8 +33,9 @@ def main(spark, model_file, test_file):
     
     #label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
     #label.show(50)
-    
-    listen = df.select(['track_index',count('track_index').alias('ucount')]).groupBy("track_index").orderBy('ucount')
+    df.createOrReplaceTempView('my_table')
+
+    listen = spark.sql('select track_index, count(track-index) as ucount from my_table group by track_index orber by ucount')
     listen.show(50)
     
     pred = model.recommendForAllUsers(20)
