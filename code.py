@@ -31,16 +31,25 @@ def main(spark, model_file, test_file):
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
                      .orderBy(['user_index', 'count'], ascending = False)
 
-    
     label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual_track')).rdd
     #label.show(50)
     
-
-    # Recommend top 100 tracks to each users
     pred = model.recommendForAllUsers(100)
     pred = pred.select(['user_index', 'recommendations.track_index']).rdd
-    pred_label = pred.join(label).map(lambda x: (x[1]))
-    #label = listened.map(lambda x: (x[1]))
+    
+    label = pred.join(label).map(lambda x: (x[1]))
+    
+    overp = label.map(lambda x: x[1]-x[2])
+   
+    co = 0
+    
+    for row in label.rdd.collect():
+         co ++ 
+            
+    print(co)
+    
+    
+   
     
 
     
