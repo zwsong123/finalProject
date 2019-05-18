@@ -40,8 +40,10 @@ def main(spark, model_file, test_file):
     
     target = spark.sql('select distinct user_index from my_table')
     
-    pred = model.recommendForUserSubset(target,20)
+    pred = model.recommendForUserSubset(target,10)
     #pred = pred.select(['user_index', 'recommendations.track_index'])
+    
+    pred.show(10)
     
     pred.createOrReplaceTempView('my_table_2')
     
@@ -49,13 +51,16 @@ def main(spark, model_file, test_file):
     #nshow.show(1)
     #nuser = spark.sql('select count(user_index) from my_table_2')
     #nuser.show()
-
+    pred1 = spark.sql('select user_index, recommendations.track_index as pretrack from my_table_2')
+    
     
     #pred_label = pred.join(label).map(lambda x: (x[1]))
     
+    print('here!!!!!!!!!')
+    
     list1 = []
-    for row in pred.rdd.collect():
-        list1.extend(row.recommendations.track_index)
+    for row in pred1.rdd.collect():
+        list1.extend(row.pretrack)
         
     print (list1)
     
