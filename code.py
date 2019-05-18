@@ -25,22 +25,23 @@ def main(spark, model_file, test_file):
     spark : SparkSession object
     filename : string, path to the parquet file to load
     '''
-
+    #read model and file
     model = ALSModel.load(model_file)
-    
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
                      .orderBy(['user_index', 'count'], ascending = False)
     #df.show(50)
-
-    label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track'))
+    
+    label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
     #label.show(50)
     
     pred = model.recommendForAllUsers(20)
-    pred = pred.select(['user_index', 'recommendations.track_index'])
+    pred = pred.select(['user_index', 'recommendations.track_index']).rdd
     
     label = pred.join(label).map(lambda x: (x[1]))
     
-    list1 = label.select("recommendations.track_index").toList()
+    list1 = []
+    for row in label:
+        list1 += row[0]
     
     #overr = label.map(lambda x: x[0]-x[1])
     #underr = label.map(lambda x: x[1]-x[0])
