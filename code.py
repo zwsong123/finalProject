@@ -68,7 +68,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
      #   list1.extend(row.pretrack)
     print('ck5!')    
     list2 = [1,2,3,4,5,33,1,2,5,5]
-    rec = spark.createDataFrame(mylist, IntegerType())
+    rec = spark.createDataFrame(list2, IntegerType())
     rec.createOrReplaceTempView('rec_table')
     #table1 = spark.sql('select rec_table.re_track as track_id, count(rec_table.re_track) as num_rec, listen_table.num_listen\
                        #from rec_table inner join listen_table group by rec_table.re_track order by num_rec DESC')
