@@ -35,8 +35,8 @@ def main(spark, model_file, test_file):
     #label.show(50)
     df.createOrReplaceTempView('my_table')
 
-    listen = spark.sql('select track_index, count(track_index) as ucount from my_table group by track_index order by ucount')
-    listen.show(50)
+    #listen = spark.sql('select track_index, count(track_index) as ucount from my_table group by track_index order by ucount')
+    #listen.show(50)
     
     target = spark.sql('select distinct user_index from my_table')
     
