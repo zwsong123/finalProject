@@ -32,9 +32,9 @@ def main(spark, model_file, test_file):
                      .orderBy(['user_index', 'count'], ascending = False)
     
 
-    df.createOrReplaceTempView('my_table')
+    #df.createOrReplaceTempView('my_table')
     
-    listened = spark.sql('SELECT user_index, CONCAT(track_index) FROM my_table GROUP BY user_index')
+    listened = df.select(['user_index','track_index']).groupBy("user_index") .agg(collect_set("track_index")) 
     listened.show(50)
     
 
