@@ -34,7 +34,7 @@ def main(spark, model_file, test_file):
 
     #df.createOrReplaceTempView('my_table')
     
-    listened = df.select(['user_index','track_index']).groupBy("user_index") .agg(collect_set("track_index")) 
+    listened = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index')) 
     listened.show(50)
     
 
