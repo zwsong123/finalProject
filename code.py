@@ -33,7 +33,7 @@ def main(spark, model_file, test_file):
 
     df.createOrReplaceTempView('my_table')
     
-    listened = spark.sql('SELECT * FROM my_table ORDERBY track_index')
+    listened = spark.sql('SELECT track_index, SUM(count) as total FROM my_table GROUP BY track_index ORDER BY total')
     listened.show(50)
 
 
