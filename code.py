@@ -77,7 +77,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     rec.createOrReplaceTempView('rec_table')
     rec.show()
     
-    table1 = spark.sql('select rec_table.value as track_id, isnull(count(rec_table.value),0) as num_rec, isnull(listen_table.num_listen,0)\
+    table1 = spark.sql('select rec_table.value as track_id, ifnull(count(rec_table.value),0) as num_rec, ifnull(listen_table.num_listen,0)\
                        from rec_table full outer join listen_table on rec_table.value = listen_table.track_index group by\
                        rec_table.value order by num_rec DESC')
     
