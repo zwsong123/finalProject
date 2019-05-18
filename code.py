@@ -77,14 +77,16 @@ def main(spark, model_file, test_file, tag_file, index_file):
     rec.createOrReplaceTempView('rec_table')
     rec.show()
     
-    table1 = spark.sql('select rec_table.value as track_id, count(rec_table.re_track) as num_rec, listen_table.num_listen\
-                       #from rec_table inner join listen_table group by rec_table.re_track order by num_rec DESC')
+    table1 = spark.sql('select rec_table.value as track_id, count(rec_table.value) as num_rec, listen_table.num_listen\
+                       from rec_table inner join listen_table on rec_table.value = listen_table.track_index group by\
+                       track_id order by num_rec DESC')
     
-    table1.show(5)
+  
     
     print('ck6!')
     table1['score'] = table1['num_rec'] / table1['num_listen']
     listen.createOrReplaceTempView('main_table')
+    table1.show(5)
    
     #tag_df.createOrReplaceTempView('tag_table')
     #index_df.createOrReplaceTempView('index_table') 
