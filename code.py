@@ -15,6 +15,7 @@ from pyspark import SparkContext
 from pyspark.ml.recommendation import ALS, ALSModel
 from pyspark.mllib.evaluation import RankingMetrics
 import pyspark.sql.functions as f
+from pyspark.sql.types import IntegerType
 sc = SparkContext()
 
 
