@@ -32,7 +32,7 @@ def main(spark, model_file, test_file):
     # Recommend top 500 tracks to each users
     pred = model.recommendForAllUsers(100)
 
-    pred = pred.map(lambda x: (x[1]))
+    
     pred.schema().show()
     
     
