@@ -16,6 +16,7 @@ from pyspark.ml.recommendation import ALS, ALSModel
 from pyspark.mllib.evaluation import RankingMetrics
 import pyspark.sql.functions as f
 from pyspark.sql.types import IntegerType
+from pyspark.sql.functions import *
 sc = SparkContext()
 
 
@@ -89,7 +90,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     print('ck6!')
     
-    table2['score'] = table2['num_recom'] - table2['num_listen']
+    table2 = table2.withColumn('score', expr("num_recom - num_listen"))
     table2.show(10)
     
     #tag_df.createOrReplaceTempView('tag_table')
