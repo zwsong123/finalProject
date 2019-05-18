@@ -27,17 +27,23 @@ def main(spark, model_file, test_file):
     '''
 
     model = ALSModel.load(model_file)
+    
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
+    df.createOrReplaceTempView('my_table')
+    
+    count = df.sql('SELECT track_index, sum(count) as count* FROM 'my_table' GROUPBY track_index ORDERBY count*')
+    count.show(50)
 
-    # Recommend top 500 tracks to each users
+
+    # Recommend top 100 tracks to each users
     pred = model.recommendForAllUsers(100)
 
     print(pred.schema)
     
-    pred = pred.select(['user_index', 'recommendations.track_index']).rdd
-    pred_label = pred.map(lambda x: (x[1]))
+    #pred = pred.select(['user_index', 'recommendations.track_index']).rdd
+    #pred_label = pred.map(lambda x: (x[1]))
     
-    print(pred.schema)
+    
     
     
    
