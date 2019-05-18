@@ -33,7 +33,7 @@ def main(spark, model_file, test_file):
     pred = model.recommendForAllUsers(100)
 
     
-    pred.schema.show()
+    print(pred.schema)
     
     
    
