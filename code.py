@@ -42,13 +42,18 @@ def main(spark, model_file, test_file):
     pred = pred.select(['user_index', 'recommendations.track_index'])
     
     pred.createOrReplaceTempView('my_table_2')
+    
+    nshow = spark.sql('select * from my_table_2')
+    nshow.show()
+    nuser = spark.sql('select count(user_index) from my_table_2')
+    nuser.show()
 
     
     #pred_label = pred.join(label).map(lambda x: (x[1]))
     
     list1 = []
-    for row in pred:
-        list1.extend(row[1])
+    #for row in pred:
+    #    list1.extend(row[1])
     
     
     #overr = label.map(lambda x: x[0]-x[1])
