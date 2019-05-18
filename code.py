@@ -40,12 +40,12 @@ def main(spark, model_file, test_file):
     
     label = pred.join(label).map(lambda x: (x[1]))
     
+    label.select('recommendations.track_index').collect().map(_(0)).toList
     
+    #overr = label.map(lambda x: x[0]-x[1])
+    #underr = label.map(lambda x: x[1]-x[0])
     
-    overr = label.map(lambda x: x[0]-x[1])
-    underr = label.map(lambda x: x[1]-x[0])
-    
-    score = overr.select('track_index',count('track_index')).groupby('track_index')
+    #score = overr.select('track_index',count('track_index')).groupby('track_index')
                                                                               
                                                                              
     
