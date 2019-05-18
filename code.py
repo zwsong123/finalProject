@@ -35,11 +35,14 @@ def main(spark, model_file, test_file):
     #label.show(50)
     df.createOrReplaceTempView('my_table')
 
-    listen = spark.sql('select track_index, count(track-index) as ucount from my_table group by track_index order by ucount')
+    listen = spark.sql('select track_index, count(track_index) as ucount from my_table group by track_index order by ucount')
     listen.show(50)
     
     pred = model.recommendForAllUsers(20)
     pred = pred.select(['user_index', 'recommendations.track_index'])
+    
+    pred.createOrReplaceTempView('my_table_2')
+
     
     #pred_label = pred.join(label).map(lambda x: (x[1]))
     
