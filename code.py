@@ -40,8 +40,8 @@ def main(spark, model_file, test_file):
     label = pred.join(label).map(lambda x: (x[1]))
     
     list1 = []
-    for row in label:
-        list1 += row[0]
+    list1 = label.map(lambda x: x[0] += list1)
+    
     
     #overr = label.map(lambda x: x[0]-x[1])
     #underr = label.map(lambda x: x[1]-x[0])
