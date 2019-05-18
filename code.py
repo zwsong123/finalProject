@@ -18,7 +18,7 @@ import pyspark.sql.functions as f
 sc = SparkContext()
 
 
-def main(spark, model_name):
+def main(spark, model_name, file_name):
     '''Main routine for the row counter
     Parameters
     ----------
@@ -27,13 +27,13 @@ def main(spark, model_name):
     '''
 
     model = ALSModel.load(model_name)
-    #df = spark.read.parquet(file_name).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
+    df = spark.read.parquet(file_name).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
 
     # Recommend top 500 tracks to each users
     pred = model.recommendForAllUsers(3)
 
     # Print the results to the console
-    pred.show(5)
+    #pred.show(3)
     
 
 
