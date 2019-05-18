@@ -28,10 +28,12 @@ def main(spark, model_file, test_file):
 
     model = ALSModel.load(model_file)
     
-    df = spark.read.parquet(test_file)
+    df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
+                     .orderBy(['user_index', 'count'], ascending = False)
+
     df.createOrReplaceTempView('my_table')
     
-    listened = spark.sql('SELECT track_index, count FROM my_table ORDERBY track_index')
+    listened = spark.sql('SELECT * FROM my_table ORDERBY track_index')
     listened.show(50)
 
 
