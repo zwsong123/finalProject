@@ -18,7 +18,7 @@ import pyspark.sql.functions as f
 sc = SparkContext()
 
 
-def main(spark, model_file, test_file):
+def main(spark, model_file, test_file, tag_file, index_file):
     '''Main routine for the row counter
     Parameters
     ----------
@@ -29,22 +29,25 @@ def main(spark, model_file, test_file):
     model = ALSModel.load(model_file)
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
                      .orderBy(['user_index', 'count'], ascending = False)
+    tag_df = spark.read.parquet(tag_df)
+    index_file = spark.read.parquet(index_file)
     #df.show(50)
+    print('ck1!')
     
     #label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
     #label.show(50)
     df.createOrReplaceTempView('my_table')
 
-    #listen = spark.sql('select track_index, count(track_index) as ucount from my_table group by track_index order by ucount')
-    #listen.show(50)
-    
+    listen = spark.sql('select track_index, count(track_index) as num_lis from my_table group by track_index order by num_lis')
+    listen.createOrReplaceTempView('listen_table')
+   
+    print('ck2!')
     target = spark.sql('select distinct user_index from my_table')
     
     pred = model.recommendForUserSubset(target,10)
     #pred = pred.select(['user_index', 'recommendations.track_index'])
     
-    pred.show(10)
-    
+    print('ck3!')
     pred.createOrReplaceTempView('my_table_2')
     
     #nshow = spark.sql('select * from my_table_2 limit 3')
@@ -56,19 +59,22 @@ def main(spark, model_file, test_file):
     
     #pred_label = pred.join(label).map(lambda x: (x[1]))
     
-    print('here!!!!!!!!!')
     
+    print('ck4!')
     list1 = []
     for row in pred1.rdd.collect():
         list1.extend(row.pretrack)
-        
-    print (list1)
+    print('ck5!')    
+    rec = list1.toDF('re_track')
+    rec.createOrReplaceTempView('rec_table')
+    table1 = spark.sql('select rec_table.re_track as track_id, count(rec_table.re_track) as num_rec, listen_table.num_listen\
+                       from rec_table inner join listen_table group by rec_table.re_track order by num_rec DESC')
+    
+    table1.show(5)
     
     
-    #overr = label.map(lambda x: x[0]-x[1])
-    #underr = label.map(lambda x: x[1]-x[0])
     
-    #score = overr.select('track_index',count('track_index')).groupby('track_index')
+    
                                                                               
                                                                              
     
@@ -98,6 +104,8 @@ if __name__ == "__main__":
     # Get the filename from the command line
     model_file = sys.argv[1]
     test_file = sys.argv[2]
+    tag_file = sys.argv[3]
+    index_file = sys.argv[4]
 
     # Call our main routine
-    main(spark, model_file, test_file)
+    main(spark, model_file, test_file, tag_file, index_file)
