@@ -40,7 +40,7 @@ def main(spark, model_file, test_file):
     
     label = pred.join(label).map(lambda x: (x[1]))
     
-    list1 = label.select("recommendations.track_index").rdd.map(_(0)).collect.toList
+    list1 = label.select("recommendations.track_index").toList
     
     #overr = label.map(lambda x: x[0]-x[1])
     #underr = label.map(lambda x: x[1]-x[0])
