@@ -18,7 +18,7 @@ import pyspark.sql.functions as f
 sc = SparkContext()
 
 
-def main(spark, filename):
+def main(spark, model_name):
     '''Main routine for the row counter
     Parameters
     ----------
@@ -26,17 +26,14 @@ def main(spark, filename):
     filename : string, path to the parquet file to load
     '''
 
-    #model = ALSModel.load(modelname)
-    df = spark.read.parquet(filename).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = True)
+    model = ALSModel.load(model_name)
+    #df = spark.read.parquet(file_name).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
 
-    # Give the dataframe a temporary view so we can run SQL queries
-    df.createOrReplaceTempView('my_table')
-
-    # Construct a query
-    query = spark.sql('SELECT * FROM my_table')
+    # Recommend top 500 tracks to each users
+    pred = model.recommendForAllUsers(100)
 
     # Print the results to the console
-    query.show(50)
+    pred.show(50)
 
 
 # Only enter this block if we're in main
