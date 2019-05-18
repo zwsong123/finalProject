@@ -50,7 +50,9 @@ def main(spark, model_file, test_file):
     #pred = pred.select(['user_index', 'recommendations.track_index']).rdd
     #pred_label = pred.map(lambda x: (x[1]))
     
-    
+    pred.createOrReplaceTempView('the_table')
+    reco = spark.sql('SELECT * FROM the_table WHERE user_index =  211510.0')
+    reco.show()
     
     
    
