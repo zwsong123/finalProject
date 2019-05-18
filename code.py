@@ -43,7 +43,7 @@ def main(spark, model_file, test_file):
     
     pred.createOrReplaceTempView('my_table_2')
     
-    nshow = spark.sql('select top 3 * from my_table_2')
+    nshow = spark.sql('select * from my_table_2 limit 3')
     nshow.show(1)
     nuser = spark.sql('select count(user_index) from my_table_2')
     nuser.show()
@@ -52,8 +52,8 @@ def main(spark, model_file, test_file):
     #pred_label = pred.join(label).map(lambda x: (x[1]))
     
     list1 = []
-    #for row in pred:
-    #    list1.extend(row[1])
+    for row in pred.rdd.collect():
+        list1.extend(row.recommendations.track_index)
     
     
     #overr = label.map(lambda x: x[0]-x[1])
