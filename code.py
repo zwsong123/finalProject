@@ -36,7 +36,7 @@ def main(spark, model_file, test_file):
     #listened = spark.sql('SELECT track_index, SUM(count) as total FROM my_table GROUP BY track_index ORDER BY total DESC')
     #listened.show(50)
     
-    listened = spark.sql('SELECT * FROM my_table WHERE user_index = 1.0 ORDER BY count')
+    listened = spark.sql('SELECT * FROM my_table WHERE user_index = 3108.0 ORDER BY count')
     listened.show()
     
     
@@ -45,7 +45,7 @@ def main(spark, model_file, test_file):
     # Recommend top 100 tracks to each users
     pred = model.recommendForAllUsers(100)
 
-    pred.df.createOrReplaceTempView('the_table')
+    pred.createOrReplaceTempView('the_table')
     reco = spark.sql('SELECT * FROM the_table WHERE user_index = 1.0')
     reco.show()
     
