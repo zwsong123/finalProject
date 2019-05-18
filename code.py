@@ -38,15 +38,17 @@ def main(spark, model_file, test_file):
     listen = spark.sql('select track_index, count(track_index) as ucount from my_table group by track_index order by ucount')
     listen.show(50)
     
-    pred = model.recommendForAllUsers(20)
-    pred = pred.select(['user_index', 'recommendations.track_index'])
+    target = spark.sql('select distinct user_index from my_table')
+    
+    pred = model.recommendForUserSubset(target,20)
+    #pred = pred.select(['user_index', 'recommendations.track_index'])
     
     pred.createOrReplaceTempView('my_table_2')
     
-    nshow = spark.sql('select * from my_table_2 limit 3')
-    nshow.show(1)
-    nuser = spark.sql('select count(user_index) from my_table_2')
-    nuser.show()
+    #nshow = spark.sql('select * from my_table_2 limit 3')
+    #nshow.show(1)
+    #nuser = spark.sql('select count(user_index) from my_table_2')
+    #nuser.show()
 
     
     #pred_label = pred.join(label).map(lambda x: (x[1]))
@@ -54,6 +56,8 @@ def main(spark, model_file, test_file):
     list1 = []
     for row in pred.rdd.collect():
         list1.extend(row.recommendations.track_index)
+        
+    print (list1[])
     
     
     #overr = label.map(lambda x: x[0]-x[1])
