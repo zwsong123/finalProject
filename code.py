@@ -73,7 +73,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     list2 = [1,2,3,4,5,33,1,2,5,5]
     
     
-    rec = spark.createDataFrame(list2, StringType())
+    rec = spark.createDataFrame(list2, IntegerType())
     rec.createOrReplaceTempView('rec_table')
     rec.show()
     
