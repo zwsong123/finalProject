@@ -46,10 +46,6 @@ def main(spark, model_file, test_file):
 
     # Recommend top 100 tracks to each users
     pred = model.recommendForAllUsers(100)
-
-    pred.createOrReplaceTempView('the_table')
-    reco = spark.sql('SELECT * FROM the_table WHERE user_index = 1.0')
-    reco.show()
     
     #pred = pred.select(['user_index', 'recommendations.track_index']).rdd
     #pred_label = pred.map(lambda x: (x[1]))
