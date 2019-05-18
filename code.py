@@ -34,7 +34,7 @@ def main(spark, model_file, test_file):
 
     df.createOrReplaceTempView('my_table')
     
-    listened = spark.sql('SELECT user_index, track_index FROM my_table GROUP BY user_index')
+    listened = spark.sql('SELECT user_index, GROUP_CONCAT(track_index) FROM my_table GROUP BY user_index')
     listened.show(50)
     
 
