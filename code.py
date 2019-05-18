@@ -29,7 +29,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     model = ALSModel.load(model_file)
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
                      .orderBy(['user_index', 'count'], ascending = False)
-    tag_df = spark.read.parquet(tag_df)
+    tag_df = spark.read.parquet(tag_file)
     index_file = spark.read.parquet(index_file)
     #df.show(50)
     print('ck1!')
