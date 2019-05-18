@@ -68,18 +68,23 @@ def main(spark, model_file, test_file, tag_file, index_file):
     #for row in pred1.rdd.collect():
      #   list1.extend(row.pretrack)
     print('ck5!')    
+    
+   
     list2 = [1,2,3,4,5,33,1,2,5,5]
-    rec = spark.createDataFrame(list2, IntegerType())
+    
+    schema = StructType([StructField('re_track', StringType(), True)])
+    rec = spark.createDataFrame(list2, schema)
     rec.createOrReplaceTempView('rec_table')
     rec.show()
     
-    #table1 = spark.sql('select rec_table.re_track as track_id, count(rec_table.re_track) as num_rec, listen_table.num_listen\
+    table1 = spark.sql('select rec_table.re_track as track_id, count(rec_table.re_track) as num_rec, listen_table.num_listen\
                        #from rec_table inner join listen_table group by rec_table.re_track order by num_rec DESC')
     
-    #table1.show(5)
+    table1.show(5)
     
-    #table1['score'] = table1['num_rec'] / table1['num_listen']
-    #listen.createOrReplaceTempView('main_table')
+    print('ck6!')
+    table1['score'] = table1['num_rec'] / table1['num_listen']
+    listen.createOrReplaceTempView('main_table')
    
     #tag_df.createOrReplaceTempView('tag_table')
     #index_df.createOrReplaceTempView('index_table') 
