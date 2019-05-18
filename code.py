@@ -71,7 +71,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     rec = spark.createDataFrame(mylist, IntegerType())
     rec.createOrReplaceTempView('rec_table')
     #table1 = spark.sql('select rec_table.re_track as track_id, count(rec_table.re_track) as num_rec, listen_table.num_listen\
-                       from rec_table inner join listen_table group by rec_table.re_track order by num_rec DESC')
+                       #from rec_table inner join listen_table group by rec_table.re_track order by num_rec DESC')
     
     #table1.show(5)
     
