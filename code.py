@@ -44,7 +44,7 @@ def main(spark, model_file, test_file):
     pred.createOrReplaceTempView('my_table_2')
     
     nshow = spark.sql('select * from my_table_2')
-    nshow.show()
+    nshow.show(1)
     nuser = spark.sql('select count(user_index) from my_table_2')
     nuser.show()
 
