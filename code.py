@@ -27,7 +27,7 @@ def main(spark, filename):
     '''
 
     #model = ALSModel.load(modelname)
-    df = spark.read.parquet(filename).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
+    df = spark.read.parquet(filename).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = True)
 
     # Give the dataframe a temporary view so we can run SQL queries
     df.createOrReplaceTempView('my_table')
