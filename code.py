@@ -44,7 +44,7 @@ def main(spark, model_file, test_file):
     co = 0
     
     for row in label.rdd.collect():
-         co ++ 
+         co = co+1 
             
     print(co)
     
