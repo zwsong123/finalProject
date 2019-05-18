@@ -39,14 +39,16 @@ def main(spark, model_file, test_file):
     
     label = pred.join(label).map(lambda x: (x[1]))
     
-    overp = label.map(lambda x: x[1]-x[2])
+    overp = label.map(lambda x: x[1]-x[2]).show(10)
    
-    co = 0
+    underp = label.map(lambda x: x[2]-x[1]).show(10)
+    
+   
     
     #for row in label.rdd.collect():
-     #    co = co+1 
+   
             
-    #print(co)
+    
     
     
    
