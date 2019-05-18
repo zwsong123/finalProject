@@ -18,7 +18,7 @@ import pyspark.sql.functions as f
 sc = SparkContext()
 
 
-def main(spark, modelname, filename):
+def main(spark, filename):
     '''Main routine for the row counter
     Parameters
     ----------
@@ -26,7 +26,7 @@ def main(spark, modelname, filename):
     filename : string, path to the parquet file to load
     '''
 
-    model = ALSModel.load(modelname)
+    #model = ALSModel.load(modelname)
     df = spark.read.parquet(filename).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
 
     # Give the dataframe a temporary view so we can run SQL queries
