@@ -35,7 +35,7 @@ def main(spark, model_file, test_file):
     #label.show(50)
     df.createOrReplaceTempView('my_table')
 
-    listen = spark.sql('select track_index, count(track-index) as ucount from my_table group by track_index orber by ucount')
+    listen = spark.sql('select track_index, count(track-index) as ucount from my_table group by track_index order by ucount')
     listen.show(50)
     
     pred = model.recommendForAllUsers(20)
