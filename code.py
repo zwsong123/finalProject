@@ -34,16 +34,18 @@ def main(spark, model_file, test_file):
     label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual_track')).rdd
     #label.show(50)
     
-    pred = model.recommendForAllUsers(100)
+    pred = model.recommendForAllUsers(20)
     pred = pred.select(['user_index', 'recommendations.track_index']).rdd
     
     label = pred.join(label).map(lambda x: (x[1]))
     
-    overp = label.map(lambda x: x[1]-x[2])
-    print(overp.take(10))
+    print(label.take(10))
+    
+    #overp = label.map(lambda x: x[0]-x[1])
+    #print(overp.take(10))
    
-    underp = label.map(lambda x: x[2]-x[1])
-    print(underp.take(10))
+    #underp = label.map(lambda x: x[1]-x[0])
+    #print(underp.take(10))
     
    
     
