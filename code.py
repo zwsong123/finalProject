@@ -28,11 +28,11 @@ def main(spark, model_file, test_file):
 
     model = ALSModel.load(model_file)
     
-    df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
+    df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])
     df.createOrReplaceTempView('my_table')
     
-    count = spark.sql('SELECT track_index, count FROM my_table GROUPBY track_index')
-    count.show(50)
+    listened = spark.sql('SELECT track_index, count FROM my_table')
+    listened.show(50)
 
 
     # Recommend top 100 tracks to each users
