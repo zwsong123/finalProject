@@ -39,9 +39,11 @@ def main(spark, model_file, test_file):
     
     label = pred.join(label).map(lambda x: (x[1]))
     
-    overp = label.map(lambda x: x[1]-x[2]).show(10)
+    overp = label.map(lambda x: x[1]-x[2])
+    print(overp.take(10))
    
-    underp = label.map(lambda x: x[2]-x[1]).show(10)
+    underp = label.map(lambda x: x[2]-x[1])
+    print(underp.take(10))
     
    
     
