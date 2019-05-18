@@ -47,4 +47,4 @@ if __name__ == "__main__":
     filename = sys.argv[1]
 
     # Call our main routine
-    main(spark, filename)
+    main(spark, model_name, file_name)
