@@ -31,8 +31,11 @@ def main(spark, model_file, test_file):
                      .orderBy(['user_index', 'count'], ascending = False)
     #df.show(50)
     
-    label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
+    #label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
     #label.show(50)
+    
+    listen = df.select(['track_index',count('track_index').alias('ucount')]).groupBy("track_index").orderBy('ucount')
+    listen.show(50)
     
     pred = model.recommendForAllUsers(20)
     pred = pred.select(['user_index', 'recommendations.track_index'])
@@ -41,7 +44,7 @@ def main(spark, model_file, test_file):
     
     list1 = []
     for row in pred:
-        list1 = list1 + row[1]
+        list1.extend(row[1])
     
     
     #overr = label.map(lambda x: x[0]-x[1])
