@@ -30,10 +30,11 @@ def main(spark, model_name):
     #df = spark.read.parquet(file_name).select(['user_index', 'track_index', 'count']).orderBy(['user_index', 'count'], ascending = False)
 
     # Recommend top 500 tracks to each users
-    pred = model.recommendForAllUsers(100)
+    #pred = model.recommendForAllUsers(100)
 
     # Print the results to the console
-    pred.show(50)
+    #pred.show(50)
+    print('here')
 
 
 # Only enter this block if we're in main
