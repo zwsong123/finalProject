@@ -33,14 +33,21 @@ def main(spark, model_file, test_file):
 
     df.createOrReplaceTempView('my_table')
     
-    listened = spark.sql('SELECT track_index, SUM(count) as total FROM my_table GROUP BY track_index ORDER BY total DESC')
-    listened.show(50)
+    #listened = spark.sql('SELECT track_index, SUM(count) as total FROM my_table GROUP BY track_index ORDER BY total DESC')
+    #listened.show(50)
+    
+    listened = spark.sql('SELECT * FROM my_table WHERE user_index = 1.0 ORDER BY count')
+    listened.show()
+    
+    
 
 
     # Recommend top 100 tracks to each users
     pred = model.recommendForAllUsers(100)
 
-    print(pred.schema)
+    pred.df.createOrReplaceTempView('the_table')
+    reco = spark.sql('SELECT * FROM the_table WHERE user_index = 1.0')
+    reco.show()
     
     #pred = pred.select(['user_index', 'recommendations.track_index']).rdd
     #pred_label = pred.map(lambda x: (x[1]))
