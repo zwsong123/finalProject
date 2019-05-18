@@ -44,7 +44,8 @@ if __name__ == "__main__":
     spark = SparkSession.builder.appName('part1').getOrCreate()
 
     # Get the filename from the command line
-    filename = sys.argv[1]
+    model_file = sys.argv[1]
+    test_file = sys.argv[2]
 
     # Call our main routine
     main(spark, model_file, test_file)
