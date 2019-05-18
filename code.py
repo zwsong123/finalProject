@@ -83,17 +83,18 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     table1.createOrReplaceTempView('rec_table_2')
              
-    
+    table2 = sparl.sql('select rec_table_2.track_id, ifnull(rec_table_2.num_rec,0), ifnull(listen_table.num_lis,0) from rec_table \
+                          full outer join listen_table on rec_table.track_id = listen_table.track_index')
   
     
     print('ck6!')
-    #table1['score'] = table1['num_rec'] / table1['num_listen']
     
-    table1.show(5)
-   
+    table2['score'] = table2['num_rec'] - table2['num_lis']
+    table2.show(10)
+    
     #tag_df.createOrReplaceTempView('tag_table')
     #index_df.createOrReplaceTempView('index_table') 
-    #table2 = spark.sql('select main_table.track_id, main_table.score, tag_table.tags from main_table left join index_table on\
+    #table3 = spark.sql('select main_table.track_id, main_table.score, tag_table.tags from main_table left join index_table on\
                         #main_table.track_id = index_table.xxxxx left join tag_table on index_table.yyyy = tag_table.track_id')
     
     
