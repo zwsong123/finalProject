@@ -77,7 +77,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     rec.createOrReplaceTempView('rec_table')
     rec.show()
     
-    table1 = spark.sql('select rec_table.value as track_id, count(rec_table.value) as num_rec
+    table1 = spark.sql('select rec_table.value as track_id, count(rec_table.value) as num_rec\
                        from rec_table group by rec_table.value order by num_rec DESC')
                        
     
