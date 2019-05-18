@@ -32,7 +32,7 @@ def main(spark, model_file, test_file):
                      .orderBy(['user_index', 'count'], ascending = False)
 
     
-    label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index')).alias('actual_track')).rdd
+    label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual_track')).rdd
     #label.show(50)
     
 
