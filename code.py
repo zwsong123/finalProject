@@ -30,7 +30,7 @@ def main(spark, model_file, test_file):
     
     df = spark.read.parquet(test_file).select(['user_index', 'track_index', 'count'])\
                      .orderBy(['user_index', 'count'], ascending = False)
-    df.show(50)
+    #df.show(50)
 
     label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track').rdd
     #label.show(50)
@@ -45,7 +45,7 @@ def main(spark, model_file, test_file):
     overr = label.map(lambda x: x[0]-x[1])
     underr = label.map(lambda x: x[1]-x[0])
     
-    score = overr.select('track_index',count('track_index')).groupby('track_index')
+    #score = overr.select('track_index',count('track_index')).groupby('track_index')
                                                                               
                                                                              
     
