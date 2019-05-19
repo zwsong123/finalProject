@@ -34,8 +34,6 @@ def main(spark, model_file, test_file, tag_file, index_file):
     tag_df = spark.read.parquet(tag_file)
     
     index_df = spark.read.parquet(index_file)
-    tag_df.show(10)
-    index_df.show(10)
     
     
     #label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
@@ -46,45 +44,33 @@ def main(spark, model_file, test_file, tag_file, index_file):
     listen = spark.sql('select track_index, count(track_index) as num_lis from my_table group by track_index order by num_lis')
     listen.createOrReplaceTempView('listen_table')
     
-   
-    
+
     target = spark.sql('select distinct user_index from my_table')
-    
     pred = model.recommendForUserSubset(target,10)
     
-    
-    
+ 
     pred.createOrReplaceTempView('my_table_2')
     pred1 = spark.sql('select user_index, recommendations.track_index as pretrack from my_table_2')
   
     
     list1 = []
-    #for row in pred1.rdd.collect():
-     #   list1.extend(row.pretrack)
+    for row in pred1.rdd.collect():
+        list1.extend(row.pretrack)
 
-    list2 = [1,2,3,4,5,33,1,2,5,5]
-    
-    
-    rec = spark.createDataFrame(list2, IntegerType())
+    rec = spark.createDataFrame(list1, IntegerType())
     rec.createOrReplaceTempView('rec_table')
-    rec.show()
     
     table1 = spark.sql('select rec_table.value as track_id, count(rec_table.value) as num_rec\
                        from rec_table group by rec_table.value order by num_rec DESC')
     
     
     
-    table1.createOrReplaceTempView('rec_table_2')
-    
-    table1.show(10)
-             
+    table1.createOrReplaceTempView('rec_table_2')       
     table2 = spark.sql('select rec_table_2.track_id, ifnull(rec_table_2.num_rec,0) as num_recom, ifnull(listen_table.num_lis,0) as num_listen from rec_table_2 \
                           inner join listen_table on rec_table_2.track_id = listen_table.track_index')
   
     
     table2 = table2.withColumn('score', expr("num_recom - num_listen"))
-    
-    
     
     table2.createOrReplaceTempView('main_table')
     tag_df.createOrReplaceTempView('tag_table')
