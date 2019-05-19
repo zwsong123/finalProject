@@ -34,8 +34,9 @@ def main(spark, model_file, test_file, tag_file, index_file):
     tag_df = spark.read.parquet(tag_file)
     
     index_df = spark.read.parquet(index_file)
-    #df.show(50)
-    print('ck1!')
+    tag_df.show(10)
+    index_df.show(10)
+    
     
     #label = df.select(['user_index','track_index']).groupBy("user_index").agg(f.collect_list('track_index').alias('actual track')).rdd
     #label.show(50)
@@ -46,19 +47,15 @@ def main(spark, model_file, test_file, tag_file, index_file):
     listen.createOrReplaceTempView('listen_table')
     
    
-    print('ck2!')
+    
     target = spark.sql('select distinct user_index from my_table')
     
     pred = model.recommendForUserSubset(target,10)
-    #pred = pred.select(['user_index', 'recommendations.track_index'])
     
-    print('ck3!')
+    
+    
     pred.createOrReplaceTempView('my_table_2')
     
-    #nshow = spark.sql('select * from my_table_2 limit 3')
-    #nshow.show(1)
-    #nuser = spark.sql('select count(user_index) from my_table_2')
-    #nuser.show()
     pred1 = spark.sql('select user_index, recommendations.track_index as pretrack from my_table_2')
     
     
@@ -92,13 +89,14 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     print('ck6!')
     
-    table3 = table2.withColumn('score', expr("num_recom - num_listen"))
+    #table3 = table2.withColumn('score', expr("num_recom - num_listen"))
     
-    table3.show(10)
+    #table3.show(10)
     
     
-    #tag_df.createOrReplaceTempView('tag_table')
-    #index_df.createOrReplaceTempView('index_table') 
+    tag_df.createOrReplaceTempView('tag_table')
+    index_df.createOrReplaceTempView('index_table') 
+    
     #table3 = spark.sql('select main_table.track_id, main_table.score, tag_table.tags from main_table left join index_table on\
                         #main_table.track_id = index_table.xxxxx left join tag_table on index_table.yyyy = tag_table.track_id')
         
