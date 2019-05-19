@@ -89,11 +89,11 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     print('ck6!')
     
-    table3 = table2.withColumn('score', expr("num_recom - num_listen"))
-    
-    #table3.show(10)
+    table2 = table2.withColumn('score', expr("num_recom - num_listen"))
     
     
+    
+    table2.createOrReplaceTempView('main_table')
     tag_df.createOrReplaceTempView('tag_table')
     index_df.createOrReplaceTempView('index_table') 
     
