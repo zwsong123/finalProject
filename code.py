@@ -55,13 +55,8 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     
     pred.createOrReplaceTempView('my_table_2')
-    
     pred1 = spark.sql('select user_index, recommendations.track_index as pretrack from my_table_2')
-    
-    
-    #pred_label = pred.join(label).map(lambda x: (x[1]))
-    
-    
+  
     
     list1 = []
     #for row in pred1.rdd.collect():
@@ -87,8 +82,6 @@ def main(spark, model_file, test_file, tag_file, index_file):
                           inner join listen_table on rec_table_2.track_id = listen_table.track_index')
   
     
-    print('ck6!')
-    
     table2 = table2.withColumn('score', expr("num_recom - num_listen"))
     
     
@@ -101,13 +94,11 @@ def main(spark, model_file, test_file, tag_file, index_file):
                         main_table.track_id = index_table.track_index left join tag_table on index_table.track_id = tag_table.track_id')
         
     table3.createOrReplaceTempView('final_table')
-    the_table = spark.sql('select tag, sum(score) as genre_score from final_table group by tag order by genre_score DESC')
-    the_table.show(10)
-    the_table.orderBy("genre_score".asc).show(10)
-    
-    
-    
-    
+    desc_table = spark.sql('select tag, sum(score) as genre_score from final_table group by tag order by genre_score DESC')
+    desc_table.show(10)
+    desc_table.createOrReplaceTempView('final_table_2')
+    asc_table = spark.sql('select * from final_table_2 order by genre_score ASC')
+    asc_table.show(10)
     
 
 
