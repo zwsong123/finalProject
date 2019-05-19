@@ -43,7 +43,6 @@ def main(spark, model_file, test_file, tag_file, index_file):
    
 
     listen = spark.sql('select track_index, count(track_index) as num_lis from my_table group by track_index order by num_lis')
-    listen = listen.na.drop()
     listen.createOrReplaceTempView('listen_table')
     
    
@@ -66,13 +65,11 @@ def main(spark, model_file, test_file, tag_file, index_file):
     #pred_label = pred.join(label).map(lambda x: (x[1]))
     
     
-    print('ck4!')
+    
     list1 = []
     #for row in pred1.rdd.collect():
      #   list1.extend(row.pretrack)
-    print('ck5!')    
-    
-   
+
     list2 = [1,2,3,4,5,33,1,2,5,5]
     
     
@@ -94,12 +91,16 @@ def main(spark, model_file, test_file, tag_file, index_file):
     print('ck6!')
     
     table2 = table2.withColumn('score', expr("num_recom - num_listen"))
+    table2.na.drop()
     table2.show(10)
     
     #tag_df.createOrReplaceTempView('tag_table')
     #index_df.createOrReplaceTempView('index_table') 
     #table3 = spark.sql('select main_table.track_id, main_table.score, tag_table.tags from main_table left join index_table on\
                         #main_table.track_id = index_table.xxxxx left join tag_table on index_table.yyyy = tag_table.track_id')
+        
+    #table3.createOrReplaceTempView('final_table')
+    #the_table = spark.sql('select tags, sum(score) as genre_score from final_table group by tags order by ')
     
     
     
