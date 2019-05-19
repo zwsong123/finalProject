@@ -89,7 +89,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     print('ck6!')
     
-    #table3 = table2.withColumn('score', expr("num_recom - num_listen"))
+    table3 = table2.withColumn('score', expr("num_recom - num_listen"))
     
     #table3.show(10)
     
@@ -97,13 +97,13 @@ def main(spark, model_file, test_file, tag_file, index_file):
     tag_df.createOrReplaceTempView('tag_table')
     index_df.createOrReplaceTempView('index_table') 
     
-    #table3 = spark.sql('select main_table.track_id, main_table.score, tag_table.tags from main_table left join index_table on\
-                        #main_table.track_id = index_table.xxxxx left join tag_table on index_table.yyyy = tag_table.track_id')
+    table3 = spark.sql('select main_table.track_id, main_table.score, tag_table.tag from main_table left join index_table on\
+                        main_table.track_id = index_table.track_index left join tag_table on index_table.track_id = tag_table.track_id')
         
-    #table3.createOrReplaceTempView('final_table')
-    #the_table = spark.sql('select tags, sum(score) as genre_score from final_table group by tags order by genre_score DESC')
-    #the_table.show(10)
-    #the_table.orderBy("genre_score".asc).show(10)
+    table3.createOrReplaceTempView('final_table')
+    the_table = spark.sql('select tag, sum(score) as genre_score from final_table group by tag order by genre_score DESC')
+    the_table.show(10)
+    the_table.orderBy("genre_score".asc).show(10)
     
     
     
