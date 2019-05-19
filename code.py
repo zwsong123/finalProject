@@ -87,7 +87,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     table1.show(10)
              
     table2 = spark.sql('select rec_table_2.track_id, ifnull(rec_table_2.num_rec,0) as num_recom, ifnull(listen_table.num_lis,0) as num_listen from rec_table_2 \
-                          full outer join listen_table on rec_table_2.track_id = listen_table.track_index')
+                          inner join listen_table on rec_table_2.track_id = listen_table.track_index')
   
     
     print('ck6!')
