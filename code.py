@@ -93,7 +93,7 @@ def main(spark, model_file, test_file, tag_file, index_file):
     print('ck6!')
     
     table3 = table2.withColumn('score', expr("num_recom - num_listen"))
-    table3.na.drop(['track_id'])
+    table3.na.drop('track_id')
     table3.show(10)
     
     
