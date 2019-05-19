@@ -43,8 +43,9 @@ def main(spark, model_file, test_file, tag_file, index_file):
    
 
     listen = spark.sql('select track_index, count(track_index) as num_lis from my_table group by track_index order by num_lis')
+    listen = listen.na.drop()
     listen.createOrReplaceTempView('listen_table')
-    print(isnull(listen.track_index))
+    
    
     print('ck2!')
     target = spark.sql('select distinct user_index from my_table')
@@ -81,7 +82,8 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     table1 = spark.sql('select rec_table.value as track_id, count(rec_table.value) as num_rec\
                        from rec_table group by rec_table.value order by num_rec DESC')
-                       
+    
+    print(isnull(table1.track_id))
     
     table1.createOrReplaceTempView('rec_table_2')
              
@@ -91,8 +93,8 @@ def main(spark, model_file, test_file, tag_file, index_file):
     
     print('ck6!')
     
-    #table2 = table2.withColumn('score', expr("num_recom - num_listen"))
-    #table2.show(10)
+    table2 = table2.withColumn('score', expr("num_recom - num_listen"))
+    table2.show(10)
     
     #tag_df.createOrReplaceTempView('tag_table')
     #index_df.createOrReplaceTempView('index_table') 
