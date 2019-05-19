@@ -80,9 +80,11 @@ def main(spark, model_file, test_file, tag_file, index_file):
     table1 = spark.sql('select rec_table.value as track_id, count(rec_table.value) as num_rec\
                        from rec_table group by rec_table.value order by num_rec DESC')
     
-    print(isnull(table1.track_id))
+    
     
     table1.createOrReplaceTempView('rec_table_2')
+    
+    table1.show(10)
              
     table2 = spark.sql('select rec_table_2.track_id, ifnull(rec_table_2.num_rec,0) as num_recom, ifnull(listen_table.num_lis,0) as num_listen from rec_table_2 \
                           full outer join listen_table on rec_table_2.track_id = listen_table.track_index')
@@ -100,30 +102,13 @@ def main(spark, model_file, test_file, tag_file, index_file):
                         #main_table.track_id = index_table.xxxxx left join tag_table on index_table.yyyy = tag_table.track_id')
         
     #table3.createOrReplaceTempView('final_table')
-    #the_table = spark.sql('select tags, sum(score) as genre_score from final_table group by tags order by ')
+    #the_table = spark.sql('select tags, sum(score) as genre_score from final_table group by tags order by genre_score DESC')
+    #the_table.show(10)
+    #the_table.orderBy($"genre_score".asc).show(10)
     
     
     
     
-    
-    
-                                                                              
-                                                                             
-    
-   
-    
-    
-   
-            
-    
-    
-    
-   
-    
-
-    
-    
-   
     
 
 
